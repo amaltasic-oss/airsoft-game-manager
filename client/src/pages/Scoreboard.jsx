@@ -307,7 +307,7 @@ function Scoreboard() {
       <div className="card">
         <h3>Mission Objectives</h3>
 
-        {score.objectives.map((objective, index) => (
+        {score.objectives?map((objective, index) => (
           <div
             key={index}
             style={{
