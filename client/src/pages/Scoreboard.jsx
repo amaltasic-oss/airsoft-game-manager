@@ -15,7 +15,7 @@ function Scoreboard() {
 
   const fetchScore = async () => {
     try {
-      const response = await axios.get(`${API_URL}/games/${gameId}`);
+      const response = await axios.get(`${API_URL}/scores/${gameId}`);
       setScore(response.data);
     } catch (error) {
       setMessage(
@@ -35,18 +35,17 @@ function Scoreboard() {
     }
   };
 
- useEffect(() => {
-  fetchScore();
-  fetchGame();
-
-  const interval = setInterval(() => {
+  useEffect(() => {
     fetchScore();
     fetchGame();
-  }, 5000);
 
-  return () => clearInterval(interval);
-}, [gameId]);
+    const interval = setInterval(() => {
+      fetchScore();
+      fetchGame();
+    }, 5000);
 
+    return () => clearInterval(interval);
+  }, [gameId]);
 
   useEffect(() => {
     if (!game) return;
@@ -75,7 +74,7 @@ function Scoreboard() {
   const saveScore = async (updatedScore) => {
     try {
       const response = await axios.put(
-        `${API_URL}/games/${gameId}`,
+        `${API_URL}/scores/${gameId}`,
         updatedScore,
         {
           headers: {
@@ -112,7 +111,7 @@ function Scoreboard() {
   };
 
   const toggleObjective = (index) => {
-    const updatedObjectives = [...score.objectives];
+    const updatedObjectives = [...(score.objectives || [])];
     updatedObjectives[index].completed = !updatedObjectives[index].completed;
 
     saveScore({
@@ -205,9 +204,10 @@ function Scoreboard() {
   return (
     <div className="container">
       <h2 className="page-title">Scoreboard</h2>
-<p className="game-meta" style={{ marginBottom: "18px" }}>
-  Prati rezultat, timer i ciljeve igre u stvarnom vremenu.
-</p>
+
+      <p className="game-meta" style={{ marginBottom: "18px" }}>
+        Prati rezultat, timer i ciljeve igre u stvarnom vremenu.
+      </p>
 
       {message && <div className="message">{message}</div>}
 
@@ -219,30 +219,29 @@ function Scoreboard() {
       </div>
 
       <div className="card">
-  <h3>Timer</h3>
+        <h3>Timer</h3>
 
-  <div className="timer-wrapper">
-    <div className="timer-label">MISSION TIMER</div>
-    <div className="timer-box">{formatTime(displayTime)}</div>
-  </div>
+        <div className="timer-wrapper">
+          <div className="timer-label">MISSION TIMER</div>
+          <div className="timer-box">{formatTime(displayTime)}</div>
+        </div>
 
-  {userInfo && (
-    <div className="action-row">
-      <button className="btn" onClick={startTimer}>
-        Start
-      </button>
+        {userInfo && (
+          <div className="action-row">
+            <button className="btn" onClick={startTimer}>
+              Start
+            </button>
 
-      <button className="btn" onClick={pauseTimer}>
-        Pause
-      </button>
+            <button className="btn" onClick={pauseTimer}>
+              Pause
+            </button>
 
-      <button className="btn" onClick={resetTimer}>
-        Reset
-      </button>
-    </div>
-  )}
-</div>
-
+            <button className="btn" onClick={resetTimer}>
+              Reset
+            </button>
+          </div>
+        )}
+      </div>
 
       <div className="card">
         <h3>Nazivi timova</h3>
@@ -251,7 +250,7 @@ function Scoreboard() {
           <label>Team A Name</label>
           <input
             type="text"
-            value={score.teamAName}
+            value={score.teamAName || ""}
             onChange={(e) => updateTeamName("teamAName", e.target.value)}
           />
         </div>
@@ -260,7 +259,7 @@ function Scoreboard() {
           <label>Team B Name</label>
           <input
             type="text"
-            value={score.teamBName}
+            value={score.teamBName || ""}
             onChange={(e) => updateTeamName("teamBName", e.target.value)}
           />
         </div>
@@ -307,27 +306,31 @@ function Scoreboard() {
       <div className="card">
         <h3>Mission Objectives</h3>
 
-        {score.objectives?map((objective, index) => (
-          <div
-            key={index}
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "10px"
-            }}
-          >
-            <span>
-              {objective.completed ? "✅" : "❌"} {objective.title}
-            </span>
+        {score.objectives?.length > 0 ? (
+          score.objectives.map((objective, index) => (
+            <div
+              key={index}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "10px"
+              }}
+            >
+              <span>
+                {objective.completed ? "✅" : "❌"} {objective.title}
+              </span>
 
-            {userInfo && (
-              <button className="btn" onClick={() => toggleObjective(index)}>
-                Promijeni status
-              </button>
-            )}
-          </div>
-        ))}
+              {userInfo && (
+                <button className="btn" onClick={() => toggleObjective(index)}>
+                  Promijeni status
+                </button>
+              )}
+            </div>
+          ))
+        ) : (
+          <p className="game-meta">Nema dostupnih ciljeva za ovu igru.</p>
+        )}
       </div>
     </div>
   );
