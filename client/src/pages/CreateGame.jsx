@@ -22,9 +22,7 @@ function CreateGame() {
     }
 
     try {
-      await axios.post(
-        "http://localhost:5000/games",
-        {
+      await axios.post(`${API_URL}/games`, {
           name,
           location,
           players: Number(players),

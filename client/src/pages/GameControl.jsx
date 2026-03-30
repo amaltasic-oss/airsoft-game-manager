@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import API_URL from "../api";
 
 function GameControl() {
   const { gameId } = useParams();
@@ -11,7 +12,7 @@ function GameControl() {
 
   const fetchGame = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/games/${gameId}`);
+      const response = await axios.get(`${API_URL}/games/${gameId}`);
       setGame(response.data);
     } catch (error) {
       setMessage(
@@ -27,7 +28,7 @@ function GameControl() {
   const updateGameStatusHandler = async (newStatus) => {
     try {
       const response = await axios.put(
-        `http://localhost:5000/games/${gameId}/status`,
+        `${API_URL}/games/${gameId}/status`,
         {
           status: newStatus
         },
@@ -50,7 +51,7 @@ function GameControl() {
   const resetScoreHandler = async () => {
     try {
       const response = await axios.put(
-        `http://localhost:5000/scores/${gameId}/reset`,
+        `${API_URL}/scores/${gameId}/reset`,
         {},
         {
           headers: {
@@ -70,7 +71,7 @@ function GameControl() {
   const resetStatusesHandler = async () => {
     try {
       const response = await axios.put(
-        `http://localhost:5000/players/game/${gameId}/reset-statuses`,
+        `${API_URL}/players/game/${gameId}/reset-statuses`,
         {},
         {
           headers: {

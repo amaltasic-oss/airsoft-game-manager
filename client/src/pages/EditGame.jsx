@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import API_URL from "../api";
 
 function EditGame() {
   const [name, setName] = useState("");
@@ -17,7 +18,7 @@ function EditGame() {
   useEffect(() => {
     const fetchGame = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/games/${id}`);
+        const response = await axios.get(`${API_URL}/games/${id}`);
         setName(response.data.name);
         setLocation(response.data.location);
         setPlayers(response.data.players);
@@ -36,8 +37,7 @@ function EditGame() {
     e.preventDefault();
 
     try {
-      await axios.put(
-        `http://localhost:5000/games/${id}`,
+      await axios.put(`${API_URL}/games/${id}`,
         {
           name,
           location,

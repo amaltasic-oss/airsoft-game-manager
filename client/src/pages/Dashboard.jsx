@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import API_URL from "../api";
 
 function Dashboard() {
   const [games, setGames] = useState([]);
@@ -10,9 +11,9 @@ function Dashboard() {
 
   useEffect(() => {
     const fetchGames = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/games");
-        setGames(response.data);
+try {
+  const response = await axios.get(`${API_URL}/games`);
+  setGames(response.data);
       } catch (error) {
         setMessage("Greška kod dohvaćanja igara");
       }

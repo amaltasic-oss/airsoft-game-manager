@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import API_URL from "../api";
 
 function Players() {
   const { gameId } = useParams();
@@ -14,7 +15,7 @@ function Players() {
 
   const fetchPlayers = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/players/game/${gameId}`);
+      const response = await axios.get(`${API_URL}/games/${gameId}/players`);
       setPlayers(response.data);
     } catch (error) {
       setMessage(
@@ -39,7 +40,7 @@ useEffect(() => {
 
     try {
       await axios.post(
-        `http://localhost:5000/players/game/${gameId}`,
+         `${API_URL}/games/${gameId}/players`,
         {
           name,
           team
@@ -65,7 +66,7 @@ useEffect(() => {
   const updateStatusHandler = async (playerId, newStatus) => {
     try {
       await axios.put(
-        `http://localhost:5000/players/${playerId}/status`,
+        `${API_URL}/players/${playerId}/status`,
         {
           status: newStatus
         },
@@ -90,7 +91,7 @@ useEffect(() => {
     if (!confirmed) return;
 
     try {
-      await axios.delete(`http://localhost:5000/players/${playerId}`, {
+      await axios.delete(`${API_URL}/players/${playerId}`, {
         headers: {
           Authorization: `Bearer ${userInfo.token}`
         }
@@ -108,7 +109,7 @@ useEffect(() => {
   const autoAssignTeamsHandler = async () => {
     try {
       await axios.put(
-        `http://localhost:5000/players/game/${gameId}/auto-assign`,
+        `${API_URL}/games/${gameId}/players/auto-assign`,
         {},
         {
           headers: {

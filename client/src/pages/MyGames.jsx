@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import API_URL from "../api";
 
 function MyGames() {
   const [games, setGames] = useState([]);
@@ -10,11 +11,11 @@ function MyGames() {
 
   const fetchMyGames = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/games/my-games", {
+      const response = await axios.get(`${API_URL}/games`); {
         headers: {
           Authorization: `Bearer ${userInfo.token}`
         }
-      });
+      };
 
       setGames(response.data);
     } catch (error) {
@@ -42,7 +43,7 @@ function MyGames() {
     if (!confirmed) return;
 
     try {
-      await axios.delete(`http://localhost:5000/games/${gameId}`, {
+      await axios.delete(`${API_URL}/games/${gameId}`, {
         headers: {
           Authorization: `Bearer ${userInfo.token}`
         }

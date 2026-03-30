@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import API_URL from "../api";
 
 function Scoreboard() {
   const { gameId } = useParams();
@@ -14,7 +15,7 @@ function Scoreboard() {
 
   const fetchScore = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/scores/${gameId}`);
+      const response = await axios.get(`${API_URL}/games/${gameId}`);
       setScore(response.data);
     } catch (error) {
       setMessage(
@@ -25,7 +26,7 @@ function Scoreboard() {
 
   const fetchGame = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/games/${gameId}`);
+      const response = await axios.get(`${API_URL}/games/${gameId}`);
       setGame(response.data);
     } catch (error) {
       setMessage(
@@ -74,7 +75,7 @@ function Scoreboard() {
   const saveScore = async (updatedScore) => {
     try {
       const response = await axios.put(
-        `http://localhost:5000/scores/${gameId}`,
+        `${API_URL}/games/${gameId}`,
         updatedScore,
         {
           headers: {
@@ -123,7 +124,7 @@ function Scoreboard() {
   const startTimer = async () => {
     try {
       const response = await axios.put(
-        `http://localhost:5000/games/${gameId}/timer/start`,
+        `${API_URL}/games/${gameId}/timer/start`,
         {},
         {
           headers: {
@@ -143,7 +144,7 @@ function Scoreboard() {
   const pauseTimer = async () => {
     try {
       const response = await axios.put(
-        `http://localhost:5000/games/${gameId}/timer/pause`,
+        `${API_URL}/games/${gameId}/timer/pause`,
         {},
         {
           headers: {
@@ -163,7 +164,7 @@ function Scoreboard() {
   const resetTimer = async () => {
     try {
       const response = await axios.put(
-        `http://localhost:5000/games/${gameId}/timer/reset`,
+        `${API_URL}/games/${gameId}/timer/reset`,
         {},
         {
           headers: {
