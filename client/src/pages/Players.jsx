@@ -15,7 +15,7 @@ function Players() {
 
   const fetchPlayers = async () => {
     try {
-      const response = await axios.get(`${API_URL}/games/${gameId}/players`);
+      const response = await axios.get(`${API_URL}/players/game/${gameId}`);
       setPlayers(response.data);
     } catch (error) {
       setMessage(
@@ -24,23 +24,22 @@ function Players() {
     }
   };
 
-useEffect(() => {
-  fetchPlayers();
-
-  const interval = setInterval(() => {
+  useEffect(() => {
     fetchPlayers();
-  }, 5000);
 
-  return () => clearInterval(interval);
-}, [gameId]);
+    const interval = setInterval(() => {
+      fetchPlayers();
+    }, 5000);
 
+    return () => clearInterval(interval);
+  }, [gameId]);
 
   const addPlayerHandler = async (e) => {
     e.preventDefault();
 
     try {
       await axios.post(
-         `${API_URL}/games/${gameId}/players`,
+        `${API_URL}/players/game/${gameId}`,
         {
           name,
           team
@@ -109,7 +108,7 @@ useEffect(() => {
   const autoAssignTeamsHandler = async () => {
     try {
       await axios.put(
-        `${API_URL}/games/${gameId}/players/auto-assign`,
+        `${API_URL}/players/game/${gameId}/auto-assign`,
         {},
         {
           headers: {
@@ -137,60 +136,59 @@ useEffect(() => {
   };
 
   const renderPlayerCard = (player) => (
-  <div key={player._id} className="card">
-    <div className="card-header">
-      <div>
-        <h3 className="card-title">{player.name}</h3>
-        <div className="small-muted">Tim: {player.team}</div>
+    <div key={player._id} className="card">
+      <div className="card-header">
+        <div>
+          <h3 className="card-title">{player.name}</h3>
+          <div className="small-muted">Tim: {player.team}</div>
+        </div>
+
+        <div
+          className={`status-badge ${
+            player.status === "active"
+              ? "status-active"
+              : player.status === "hit"
+              ? "status-hit"
+              : "status-respawn"
+          }`}
+        >
+          {player.status}
+        </div>
       </div>
 
-      <div
-        className={`status-badge ${
-          player.status === "active"
-            ? "status-active"
-            : player.status === "hit"
-            ? "status-hit"
-            : "status-respawn"
-        }`}
-      >
-        {player.status}
-      </div>
+      {userInfo && (
+        <div className="action-row">
+          <button
+            className="btn"
+            onClick={() => updateStatusHandler(player._id, "active")}
+          >
+            Active
+          </button>
+
+          <button
+            className="btn"
+            onClick={() => updateStatusHandler(player._id, "hit")}
+          >
+            Hit
+          </button>
+
+          <button
+            className="btn"
+            onClick={() => updateStatusHandler(player._id, "respawn")}
+          >
+            Respawn
+          </button>
+
+          <button
+            className="btn btn-danger"
+            onClick={() => deletePlayerHandler(player._id)}
+          >
+            Obriši
+          </button>
+        </div>
+      )}
     </div>
-
-    {userInfo && (
-      <div className="action-row">
-        <button
-          className="btn"
-          onClick={() => updateStatusHandler(player._id, "active")}
-        >
-          Active
-        </button>
-
-        <button
-          className="btn"
-          onClick={() => updateStatusHandler(player._id, "hit")}
-        >
-          Hit
-        </button>
-
-        <button
-          className="btn"
-          onClick={() => updateStatusHandler(player._id, "respawn")}
-        >
-          Respawn
-        </button>
-
-        <button
-          className="btn btn-danger"
-          onClick={() => deletePlayerHandler(player._id)}
-        >
-          Obriši
-        </button>
-      </div>
-    )}
-  </div>
-);
-
+  );
 
   return (
     <div className="container">
